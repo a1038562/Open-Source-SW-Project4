@@ -6,9 +6,10 @@ int menu() { // 입력된 숫자에 따라 메뉴 실행
 		printf("\n\n\t*** 원하는 기능의 숫자를 입력하세요. ***\n\n");
 		printf("\t1. 입실 및 퇴실 명단 추가\n");
 		printf("\t2. 명단 업데이트\n");
-		printf("\t3. 명단 검색\n");
-		printf("\t4. 전체 명단 출력\n");
-		printf("\t5. 종료\n\n");
+		printf("\t3. 명단 삭제\n");
+		printf("\t4. 명단 검색\n");
+		printf("\t5. 전체 명단 출력\n");
+		printf("\t6. 종료\n\n");
 
 		printf("\t>> ");
 		scanf(" %c", &num);
@@ -23,14 +24,19 @@ int menu() { // 입력된 숫자에 따라 메뉴 실행
 			break;
 
 		case '3':
+			delete_node();
+			break;
+
+
+		case '4':
 			search_list();
 			break;
 
-		case '4':
+		case '5':
 			print_list();
 			break;
 
-		case '5':
+		case '6':
 			printf("\n\t프로그램을 종료합니다.\n");
 			printf("\n\t****************************************\n");
 			delete_list();
@@ -154,6 +160,31 @@ void print_list() { // 학생 정보 출력
 	}
 }
 
+void delete_node() { // 학번을 입력받아서 해당하는 노드가 존재하면 삭제
+	char search[20];
+	SINFO* temp = listhead;
+
+	printf("\n\t삭제할 명단의 학번을 입력하시오>> ");
+	scanf("%s", search);
+
+
+	if (listhead != NULL && strcmp(temp->id, search) == 0) { //첫 번째 노드를 삭제하는 경우
+		listhead = listhead->next;
+		printf("\n\t ** 삭제 완료 ** ");
+	}
+	else {
+		while (temp->next != NULL) { // 다음 노드가 존재하는 경우
+			{
+				if (strcmp(temp->name, search) == 0) { // 입력한 학번이 존재할 경우
+					temp->next = temp->next->next;
+					printf("\n\t ** 삭제 완료 ** ");
+				}
+				temp = temp->next;
+			}
+		}
+	}
+}
+
 void update_node() { // 학생 정보 업데이트
 	char search[20];
 	int state;
@@ -164,11 +195,11 @@ void update_node() { // 학생 정보 업데이트
 	printf("\n\t< 업데이트 >\n\n");
 	printf("\t* 학번을 입력하세요>> ");
 	scanf("%s", search);
-	if (search_listId(search)) {
+	if (search_listId(search) == 1) {
 		printf("\t* 업데이트할 기록 - 입실: 0 입력 / 퇴실: 1 입력 >> ");
 		scanf("%d", &state);
 
-		if (state == 0 | state == 1) {
+		if (state == 0 || state == 1) {
 
 			if (temp != NULL && strcmp(temp->id, search) == 0) { // 입력한 학번이 존재하면 실행
 				if (state == 0) { // 입실 정보 입력
@@ -226,7 +257,7 @@ void search_list() { // 학번을 입력받은 후 명단에서 학번 검색
 
 	}
 	if (cnt == 0) {
-		error_id(); // 에러 메시지
+		error_id(); // 에러 메시지 출력
 		print_star();
 	}
 }
@@ -234,13 +265,12 @@ void search_list() { // 학번을 입력받은 후 명단에서 학번 검색
 
 int search_listId(char search[20]) { // id를 매개변수로 명단에서 학번 검색
 	SINFO* temp = listhead;
-	if (temp != NULL && strcmp(temp->id, search) == 0) {
-		return 1;
+	while (temp != NULL) {
+		if (strcmp(temp->id, search) == 0) {
+			return 1;
+		}
+		temp = temp->next;
 	}
-	else {
-		return 0;
-	}
-	if (temp != NULL) temp = temp->next;
 }
 
 int main(void) {

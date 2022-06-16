@@ -22,6 +22,7 @@ void print_list();
 void delete_list();
 void search_list();
 void update_node();
+void delete_node();
 void print_star();
 void print_line();
 void error_id();
